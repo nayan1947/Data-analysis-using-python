@@ -1,0 +1,3042 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{weather analysis project}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+sa}{r}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{C:}\PY{l+s+s2}{\PYZbs{}}\PY{l+s+s2}{Users}\PY{l+s+s2}{\PYZbs{}}\PY{l+s+s2}{91865}\PY{l+s+s2}{\PYZbs{}}\PY{l+s+s2}{Downloads}\PY{l+s+s2}{\PYZbs{}}\PY{l+s+s2}{1. Weather Data.csv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+             Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+0        1/1/2012 0:00    -1.8              -3.9         86                4
+1        1/1/2012 1:00    -1.8              -3.7         87                4
+2        1/1/2012 2:00    -1.8              -3.4         89                7
+3        1/1/2012 3:00    -1.5              -3.2         88                6
+4        1/1/2012 4:00    -1.5              -3.3         88                7
+{\ldots}                {\ldots}     {\ldots}               {\ldots}        {\ldots}              {\ldots}
+8779  12/31/2012 19:00     0.1              -2.7         81               30
+8780  12/31/2012 20:00     0.2              -2.4         83               24
+8781  12/31/2012 21:00    -0.5              -1.5         93               28
+8782  12/31/2012 22:00    -0.2              -1.8         89               28
+8783  12/31/2012 23:00     0.0              -2.1         86               30
+
+      Visibility\_km  Press\_kPa               Weather
+0               8.0     101.24                   Fog
+1               8.0     101.24                   Fog
+2               4.0     101.26  Freezing Drizzle,Fog
+3               4.0     101.27  Freezing Drizzle,Fog
+4               4.8     101.23                   Fog
+{\ldots}             {\ldots}        {\ldots}                   {\ldots}
+8779            9.7     100.13                  Snow
+8780            9.7     100.03                  Snow
+8781            4.8      99.95                  Snow
+8782            9.7      99.91                  Snow
+8783           11.3      99.89                  Snow
+
+[8784 rows x 8 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+0  1/1/2012 0:00    -1.8              -3.9         86                4
+1  1/1/2012 1:00    -1.8              -3.7         87                4
+2  1/1/2012 2:00    -1.8              -3.4         89                7
+3  1/1/2012 3:00    -1.5              -3.2         88                6
+4  1/1/2012 4:00    -1.5              -3.3         88                7
+
+   Visibility\_km  Press\_kPa               Weather
+0            8.0     101.24                   Fog
+1            8.0     101.24                   Fog
+2            4.0     101.26  Freezing Drizzle,Fog
+3            4.0     101.27  Freezing Drizzle,Fog
+4            4.8     101.23                   Fog
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{o}{.}\PY{n}{shape}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+(8784, 8)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{o}{.}\PY{n}{index}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+RangeIndex(start=0, stop=8784, step=1)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{o}{.}\PY{n}{columns}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Index(['Date/Time', 'Temp\_C', 'Dew Point Temp\_C', 'Rel Hum\_\%',
+       'Wind Speed\_km/h', 'Visibility\_km', 'Press\_kPa', 'Weather'],
+      dtype='object')
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{o}{.}\PY{n}{dtypes}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Date/Time            object
+Temp\_C              float64
+Dew Point Temp\_C    float64
+Rel Hum\_\%             int64
+Wind Speed\_km/h       int64
+Visibility\_km       float64
+Press\_kPa           float64
+Weather              object
+dtype: object
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Weather}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{unique}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array(['Fog', 'Freezing Drizzle,Fog', 'Mostly Cloudy', 'Cloudy', 'Rain',
+       'Rain Showers', 'Mainly Clear', 'Snow Showers', 'Snow', 'Clear',
+       'Freezing Rain,Fog', 'Freezing Rain', 'Freezing Drizzle',
+       'Rain,Snow', 'Moderate Snow', 'Freezing Drizzle,Snow',
+       'Freezing Rain,Snow Grains', 'Snow,Blowing Snow', 'Freezing Fog',
+       'Haze', 'Rain,Fog', 'Drizzle,Fog', 'Drizzle',
+       'Freezing Drizzle,Haze', 'Freezing Rain,Haze', 'Snow,Haze',
+       'Snow,Fog', 'Snow,Ice Pellets', 'Rain,Haze', 'Thunderstorms,Rain',
+       'Thunderstorms,Rain Showers', 'Thunderstorms,Heavy Rain Showers',
+       'Thunderstorms,Rain Showers,Fog', 'Thunderstorms',
+       'Thunderstorms,Rain,Fog',
+       'Thunderstorms,Moderate Rain Showers,Fog', 'Rain Showers,Fog',
+       'Rain Showers,Snow Showers', 'Snow Pellets', 'Rain,Snow,Fog',
+       'Moderate Rain,Fog', 'Freezing Rain,Ice Pellets,Fog',
+       'Drizzle,Ice Pellets,Fog', 'Drizzle,Snow', 'Rain,Ice Pellets',
+       'Drizzle,Snow,Fog', 'Rain,Snow Grains', 'Rain,Snow,Ice Pellets',
+       'Snow Showers,Fog', 'Moderate Snow,Blowing Snow'], dtype=object)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Weather}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{nunique}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+50
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{o}{.}\PY{n}{nunique}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Date/Time           8784
+Temp\_C               533
+Dew Point Temp\_C     489
+Rel Hum\_\%             83
+Wind Speed\_km/h       34
+Visibility\_km         24
+Press\_kPa            518
+Weather               50
+dtype: int64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{o}{.}\PY{n}{count}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Date/Time           8784
+Temp\_C              8784
+Dew Point Temp\_C    8784
+Rel Hum\_\%           8784
+Wind Speed\_km/h     8784
+Visibility\_km       8784
+Press\_kPa           8784
+Weather             8784
+dtype: int64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Weather}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Mainly Clear                               2106
+Mostly Cloudy                              2069
+Cloudy                                     1728
+Clear                                      1326
+Snow                                        390
+Rain                                        306
+Rain Showers                                188
+Fog                                         150
+Rain,Fog                                    116
+Drizzle,Fog                                  80
+Snow Showers                                 60
+Drizzle                                      41
+Snow,Fog                                     37
+Snow,Blowing Snow                            19
+Rain,Snow                                    18
+Thunderstorms,Rain Showers                   16
+Haze                                         16
+Drizzle,Snow,Fog                             15
+Freezing Rain                                14
+Freezing Drizzle,Snow                        11
+Freezing Drizzle                              7
+Freezing Drizzle,Fog                          6
+Snow,Ice Pellets                              6
+Snow,Haze                                     5
+Moderate Snow                                 4
+Snow Showers,Fog                              4
+Freezing Fog                                  4
+Rain,Snow,Ice Pellets                         4
+Freezing Rain,Fog                             4
+Thunderstorms,Rain Showers,Fog                3
+Freezing Drizzle,Haze                         3
+Thunderstorms,Rain                            3
+Rain,Haze                                     3
+Thunderstorms                                 2
+Freezing Rain,Haze                            2
+Moderate Snow,Blowing Snow                    2
+Drizzle,Snow                                  2
+Rain Showers,Snow Showers                     2
+Freezing Rain,Ice Pellets,Fog                 1
+Moderate Rain,Fog                             1
+Freezing Rain,Snow Grains                     1
+Thunderstorms,Rain,Fog                        1
+Rain,Ice Pellets                              1
+Thunderstorms,Moderate Rain Showers,Fog       1
+Drizzle,Ice Pellets,Fog                       1
+Rain,Snow Grains                              1
+Rain,Snow,Fog                                 1
+Snow Pellets                                  1
+Rain Showers,Fog                              1
+Thunderstorms,Heavy Rain Showers              1
+Name: Weather, dtype: int64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{o}{.}\PY{n}{info}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 8784 entries, 0 to 8783
+Data columns (total 8 columns):
+ \#   Column            Non-Null Count  Dtype
+---  ------            --------------  -----
+ 0   Date/Time         8784 non-null   object
+ 1   Temp\_C            8784 non-null   float64
+ 2   Dew Point Temp\_C  8784 non-null   float64
+ 3   Rel Hum\_\%         8784 non-null   int64
+ 4   Wind Speed\_km/h   8784 non-null   int64
+ 5   Visibility\_km     8784 non-null   float64
+ 6   Press\_kPa         8784 non-null   float64
+ 7   Weather           8784 non-null   object
+dtypes: float64(4), int64(2), object(2)
+memory usage: 549.1+ KB
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} find all the unique \PYZsq{}Wind Speed\PYZsq{} values in the data}
+
+\PY{n}{data}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+0  1/1/2012 0:00    -1.8              -3.9         86                4
+1  1/1/2012 1:00    -1.8              -3.7         87                4
+
+   Visibility\_km  Press\_kPa Weather
+0            8.0     101.24     Fog
+1            8.0     101.24     Fog
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Wind Speed\PYZus{}km/h}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{nunique}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+34
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Wind Speed\PYZus{}km/h}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{unique}\PY{p}{(}\PY{p}{)} \PY{c+c1}{\PYZsh{}answer}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([ 4,  7,  6,  9, 15, 13, 20, 22, 19, 24, 30, 35, 39, 32, 33, 26, 44,
+       43, 48, 37, 28, 17, 11,  0, 83, 70, 57, 46, 41, 52, 50, 63, 54,  2],
+      dtype=int64)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} find the number of time where the weather is exacty clear ?}
+
+\PY{n}{data}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+0  1/1/2012 0:00    -1.8              -3.9         86                4
+1  1/1/2012 1:00    -1.8              -3.7         87                4
+
+   Visibility\_km  Press\_kPa Weather
+0            8.0     101.24     Fog
+1            8.0     101.24     Fog
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Weather}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{nunique}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+50
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Weather}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{unique}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array(['Fog', 'Freezing Drizzle,Fog', 'Mostly Cloudy', 'Cloudy', 'Rain',
+       'Rain Showers', 'Mainly Clear', 'Snow Showers', 'Snow', 'Clear',
+       'Freezing Rain,Fog', 'Freezing Rain', 'Freezing Drizzle',
+       'Rain,Snow', 'Moderate Snow', 'Freezing Drizzle,Snow',
+       'Freezing Rain,Snow Grains', 'Snow,Blowing Snow', 'Freezing Fog',
+       'Haze', 'Rain,Fog', 'Drizzle,Fog', 'Drizzle',
+       'Freezing Drizzle,Haze', 'Freezing Rain,Haze', 'Snow,Haze',
+       'Snow,Fog', 'Snow,Ice Pellets', 'Rain,Haze', 'Thunderstorms,Rain',
+       'Thunderstorms,Rain Showers', 'Thunderstorms,Heavy Rain Showers',
+       'Thunderstorms,Rain Showers,Fog', 'Thunderstorms',
+       'Thunderstorms,Rain,Fog',
+       'Thunderstorms,Moderate Rain Showers,Fog', 'Rain Showers,Fog',
+       'Rain Showers,Snow Showers', 'Snow Pellets', 'Rain,Snow,Fog',
+       'Moderate Rain,Fog', 'Freezing Rain,Ice Pellets,Fog',
+       'Drizzle,Ice Pellets,Fog', 'Drizzle,Snow', 'Rain,Ice Pellets',
+       'Drizzle,Snow,Fog', 'Rain,Snow Grains', 'Rain,Snow,Ice Pellets',
+       'Snow Showers,Fog', 'Moderate Snow,Blowing Snow'], dtype=object)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{35}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{o}{.}\PY{n}{Weather}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{35}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Mainly Clear                               2106
+Mostly Cloudy                              2069
+Cloudy                                     1728
+Clear                                      1326
+Snow                                        390
+Rain                                        306
+Rain Showers                                188
+Fog                                         150
+Rain,Fog                                    116
+Drizzle,Fog                                  80
+Snow Showers                                 60
+Drizzle                                      41
+Snow,Fog                                     37
+Snow,Blowing Snow                            19
+Rain,Snow                                    18
+Thunderstorms,Rain Showers                   16
+Haze                                         16
+Drizzle,Snow,Fog                             15
+Freezing Rain                                14
+Freezing Drizzle,Snow                        11
+Freezing Drizzle                              7
+Freezing Drizzle,Fog                          6
+Snow,Ice Pellets                              6
+Snow,Haze                                     5
+Moderate Snow                                 4
+Snow Showers,Fog                              4
+Freezing Fog                                  4
+Rain,Snow,Ice Pellets                         4
+Freezing Rain,Fog                             4
+Thunderstorms,Rain Showers,Fog                3
+Freezing Drizzle,Haze                         3
+Thunderstorms,Rain                            3
+Rain,Haze                                     3
+Thunderstorms                                 2
+Freezing Rain,Haze                            2
+Moderate Snow,Blowing Snow                    2
+Drizzle,Snow                                  2
+Rain Showers,Snow Showers                     2
+Freezing Rain,Ice Pellets,Fog                 1
+Moderate Rain,Fog                             1
+Freezing Rain,Snow Grains                     1
+Thunderstorms,Rain,Fog                        1
+Rain,Ice Pellets                              1
+Thunderstorms,Moderate Rain Showers,Fog       1
+Drizzle,Ice Pellets,Fog                       1
+Rain,Snow Grains                              1
+Rain,Snow,Fog                                 1
+Snow Pellets                                  1
+Rain Showers,Fog                              1
+Thunderstorms,Heavy Rain Showers              1
+Name: Weather, dtype: int64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{36}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} find the number of time where the wind speed was exactly 4 km/h}
+\PY{n}{data}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{36}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+0  1/1/2012 0:00    -1.8              -3.9         86                4
+1  1/1/2012 1:00    -1.8              -3.7         87                4
+
+   Visibility\_km  Press\_kPa Weather
+0            8.0     101.24     Fog
+1            8.0     101.24     Fog
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Wind Speed\PYZus{}km/h}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+m+mi}{4}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+             Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+0        1/1/2012 0:00    -1.8              -3.9         86                4
+1        1/1/2012 1:00    -1.8              -3.7         87                4
+96       1/5/2012 0:00    -8.8             -11.7         79                4
+101      1/5/2012 5:00    -7.0              -9.5         82                4
+146      1/7/2012 2:00    -8.1             -11.1         79                4
+{\ldots}                {\ldots}     {\ldots}               {\ldots}        {\ldots}              {\ldots}
+8768   12/31/2012 8:00    -8.6             -10.3         87                4
+8769   12/31/2012 9:00    -8.1              -9.6         89                4
+8770  12/31/2012 10:00    -7.4              -8.9         89                4
+8772  12/31/2012 12:00    -5.8              -7.5         88                4
+8773  12/31/2012 13:00    -4.6              -6.6         86                4
+
+      Visibility\_km  Press\_kPa       Weather
+0               8.0     101.24           Fog
+1               8.0     101.24           Fog
+96              9.7     100.32          Snow
+101             4.0     100.19          Snow
+146            19.3     100.15        Cloudy
+{\ldots}             {\ldots}        {\ldots}           {\ldots}
+8768            3.2     101.14  Snow Showers
+8769            2.4     101.09          Snow
+8770            6.4     101.05      Snow,Fog
+8772           12.9     100.78          Snow
+8773           12.9     100.63          Snow
+
+[474 rows x 8 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{47}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} find out the null value}
+
+\PY{n}{data}\PY{o}{.}\PY{n}{isnull}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{47}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Date/Time           0
+Temp\_C              0
+Dew Point Temp\_C    0
+Rel Hum\_\%           0
+Wind Speed\_km/h     0
+Visibility\_km       0
+Press\_kPa           0
+Weather             0
+dtype: int64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{48}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Rename the name \PYZsq{}Weather\PYZsq{} to \PYZsq{}Weather conditions\PYZsq{}}
+
+\PY{n}{data}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{48}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+0  1/1/2012 0:00    -1.8              -3.9         86                4
+1  1/1/2012 1:00    -1.8              -3.7         87                4
+
+   Visibility\_km  Press\_kPa Weather
+0            8.0     101.24     Fog
+1            8.0     101.24     Fog
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{59}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{o}{.}\PY{n}{rename}\PY{p}{(}\PY{n}{columns} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Weather}\PY{l+s+s1}{\PYZsq{}} \PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Weather Condition}\PY{l+s+s1}{\PYZsq{}}\PY{p}{\PYZcb{}}\PY{p}{,}\PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{57}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{57}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+0  1/1/2012 0:00    -1.8              -3.9         86                4
+1  1/1/2012 1:00    -1.8              -3.7         87                4
+
+   Visibility\_km  Press\_kPa Weather Condition
+0            8.0     101.24               Fog
+1            8.0     101.24               Fog
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{60}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} what is the mean of visibility}
+
+\PY{n}{data}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{60}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+0  1/1/2012 0:00    -1.8              -3.9         86                4
+1  1/1/2012 1:00    -1.8              -3.7         87                4
+2  1/1/2012 2:00    -1.8              -3.4         89                7
+3  1/1/2012 3:00    -1.5              -3.2         88                6
+4  1/1/2012 4:00    -1.5              -3.3         88                7
+
+   Visibility\_km  Press\_kPa     Weather Condition
+0            8.0     101.24                   Fog
+1            8.0     101.24                   Fog
+2            4.0     101.26  Freezing Drizzle,Fog
+3            4.0     101.27  Freezing Drizzle,Fog
+4            4.8     101.23                   Fog
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{61}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{o}{.}\PY{n}{Visibility\PYZus{}km}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{61}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+27.66444672131151
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{62}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} find the standard deviation of pressure }
+\PY{n}{data}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{62}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+0  1/1/2012 0:00    -1.8              -3.9         86                4
+1  1/1/2012 1:00    -1.8              -3.7         87                4
+2  1/1/2012 2:00    -1.8              -3.4         89                7
+3  1/1/2012 3:00    -1.5              -3.2         88                6
+4  1/1/2012 4:00    -1.5              -3.3         88                7
+
+   Visibility\_km  Press\_kPa     Weather Condition
+0            8.0     101.24                   Fog
+1            8.0     101.24                   Fog
+2            4.0     101.26  Freezing Drizzle,Fog
+3            4.0     101.27  Freezing Drizzle,Fog
+4            4.8     101.23                   Fog
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{67}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{o}{.}\PY{n}{rename}\PY{p}{(}\PY{n}{columns} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Press\PYZus{}kPa}\PY{l+s+s1}{\PYZsq{}} \PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Pressure}\PY{l+s+s1}{\PYZsq{}}\PY{p}{\PYZcb{}}\PY{p}{,}\PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)} \PY{c+c1}{\PYZsh{}renamed the column}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{68}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{68}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+0  1/1/2012 0:00    -1.8              -3.9         86                4
+1  1/1/2012 1:00    -1.8              -3.7         87                4
+2  1/1/2012 2:00    -1.8              -3.4         89                7
+3  1/1/2012 3:00    -1.5              -3.2         88                6
+4  1/1/2012 4:00    -1.5              -3.3         88                7
+
+   Visibility\_km  Pressure     Weather Condition
+0            8.0    101.24                   Fog
+1            8.0    101.24                   Fog
+2            4.0    101.26  Freezing Drizzle,Fog
+3            4.0    101.27  Freezing Drizzle,Fog
+4            4.8    101.23                   Fog
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{69}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{o}{.}\PY{n}{Pressure}\PY{o}{.}\PY{n}{std}\PY{p}{(}\PY{p}{)} \PY{c+c1}{\PYZsh{}answer}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{69}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+0.8440047459486474
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{84}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} find the variance of relative humid }
+
+\PY{n}{data}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{84}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       Date/Time  Temp\_C  Dew Point Temp\_C  Rel\_humd\%  Wind Speed\_km/h  \textbackslash{}
+0  1/1/2012 0:00    -1.8              -3.9         86                4
+1  1/1/2012 1:00    -1.8              -3.7         87                4
+2  1/1/2012 2:00    -1.8              -3.4         89                7
+3  1/1/2012 3:00    -1.5              -3.2         88                6
+4  1/1/2012 4:00    -1.5              -3.3         88                7
+
+   Visibility\_km  Pressure     Weather Condition
+0            8.0    101.24                   Fog
+1            8.0    101.24                   Fog
+2            4.0    101.26  Freezing Drizzle,Fog
+3            4.0    101.27  Freezing Drizzle,Fog
+4            4.8    101.23                   Fog
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{86}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Rel\PYZus{}humd}\PY{l+s+s1}{\PYZpc{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{var}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{86}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+286.2485501984998
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}find the intance of Snow in Weather}
+\PY{n}{data}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+0  1/1/2012 0:00    -1.8              -3.9         86                4
+1  1/1/2012 1:00    -1.8              -3.7         87                4
+
+   Visibility\_km  Press\_kPa Weather
+0            8.0     101.24     Fog
+1            8.0     101.24     Fog
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{o}{.}\PY{n}{Weather}\PY{o}{.}\PY{n}{unique}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array(['Fog', 'Freezing Drizzle,Fog', 'Mostly Cloudy', 'Cloudy', 'Rain',
+       'Rain Showers', 'Mainly Clear', 'Snow Showers', 'Snow', 'Clear',
+       'Freezing Rain,Fog', 'Freezing Rain', 'Freezing Drizzle',
+       'Rain,Snow', 'Moderate Snow', 'Freezing Drizzle,Snow',
+       'Freezing Rain,Snow Grains', 'Snow,Blowing Snow', 'Freezing Fog',
+       'Haze', 'Rain,Fog', 'Drizzle,Fog', 'Drizzle',
+       'Freezing Drizzle,Haze', 'Freezing Rain,Haze', 'Snow,Haze',
+       'Snow,Fog', 'Snow,Ice Pellets', 'Rain,Haze', 'Thunderstorms,Rain',
+       'Thunderstorms,Rain Showers', 'Thunderstorms,Heavy Rain Showers',
+       'Thunderstorms,Rain Showers,Fog', 'Thunderstorms',
+       'Thunderstorms,Rain,Fog',
+       'Thunderstorms,Moderate Rain Showers,Fog', 'Rain Showers,Fog',
+       'Rain Showers,Snow Showers', 'Snow Pellets', 'Rain,Snow,Fog',
+       'Moderate Rain,Fog', 'Freezing Rain,Ice Pellets,Fog',
+       'Drizzle,Ice Pellets,Fog', 'Drizzle,Snow', 'Rain,Ice Pellets',
+       'Drizzle,Snow,Fog', 'Rain,Snow Grains', 'Rain,Snow,Ice Pellets',
+       'Snow Showers,Fog', 'Moderate Snow,Blowing Snow'], dtype=object)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{o}{.}\PY{n}{Weather}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Mainly Clear                               2106
+Mostly Cloudy                              2069
+Cloudy                                     1728
+Clear                                      1326
+Snow                                        390
+Rain                                        306
+Rain Showers                                188
+Fog                                         150
+Rain,Fog                                    116
+Drizzle,Fog                                  80
+Snow Showers                                 60
+Drizzle                                      41
+Snow,Fog                                     37
+Snow,Blowing Snow                            19
+Rain,Snow                                    18
+Thunderstorms,Rain Showers                   16
+Haze                                         16
+Drizzle,Snow,Fog                             15
+Freezing Rain                                14
+Freezing Drizzle,Snow                        11
+Freezing Drizzle                              7
+Snow,Ice Pellets                              6
+Freezing Drizzle,Fog                          6
+Snow,Haze                                     5
+Freezing Rain,Fog                             4
+Rain,Snow,Ice Pellets                         4
+Freezing Fog                                  4
+Moderate Snow                                 4
+Snow Showers,Fog                              4
+Thunderstorms,Rain                            3
+Thunderstorms,Rain Showers,Fog                3
+Freezing Drizzle,Haze                         3
+Rain,Haze                                     3
+Moderate Snow,Blowing Snow                    2
+Thunderstorms                                 2
+Rain Showers,Snow Showers                     2
+Freezing Rain,Haze                            2
+Drizzle,Snow                                  2
+Thunderstorms,Moderate Rain Showers,Fog       1
+Snow Pellets                                  1
+Rain,Snow Grains                              1
+Rain,Snow,Fog                                 1
+Thunderstorms,Heavy Rain Showers              1
+Rain Showers,Fog                              1
+Freezing Rain,Ice Pellets,Fog                 1
+Drizzle,Ice Pellets,Fog                       1
+Thunderstorms,Rain,Fog                        1
+Freezing Rain,Snow Grains                     1
+Rain,Ice Pellets                              1
+Moderate Rain,Fog                             1
+Name: Weather, dtype: int64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+0  1/1/2012 0:00    -1.8              -3.9         86                4
+1  1/1/2012 1:00    -1.8              -3.7         87                4
+2  1/1/2012 2:00    -1.8              -3.4         89                7
+3  1/1/2012 3:00    -1.5              -3.2         88                6
+4  1/1/2012 4:00    -1.5              -3.3         88                7
+
+   Visibility\_km  Press\_kPa               Weather
+0            8.0     101.24                   Fog
+1            8.0     101.24                   Fog
+2            4.0     101.26  Freezing Drizzle,Fog
+3            4.0     101.27  Freezing Drizzle,Fog
+4            4.8     101.23                   Fog
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{n}{data}\PY{o}{.}\PY{n}{Weather} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Snow}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{c+c1}{\PYZsh{}filtering}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+             Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+55       1/3/2012 7:00   -14.0             -19.5         63               19
+84      1/4/2012 12:00   -13.7             -21.7         51               11
+86      1/4/2012 14:00   -11.3             -19.0         53                7
+87      1/4/2012 15:00   -10.2             -16.3         61               11
+88      1/4/2012 16:00    -9.4             -15.5         61               13
+{\ldots}                {\ldots}     {\ldots}               {\ldots}        {\ldots}              {\ldots}
+8779  12/31/2012 19:00     0.1              -2.7         81               30
+8780  12/31/2012 20:00     0.2              -2.4         83               24
+8781  12/31/2012 21:00    -0.5              -1.5         93               28
+8782  12/31/2012 22:00    -0.2              -1.8         89               28
+8783  12/31/2012 23:00     0.0              -2.1         86               30
+
+      Visibility\_km  Press\_kPa Weather
+55             25.0     100.95    Snow
+84             24.1     101.25    Snow
+86             19.3     100.97    Snow
+87              9.7     100.89    Snow
+88             19.3     100.79    Snow
+{\ldots}             {\ldots}        {\ldots}     {\ldots}
+8779            9.7     100.13    Snow
+8780            9.7     100.03    Snow
+8781            4.8      99.95    Snow
+8782            9.7      99.91    Snow
+8783           11.3      99.89    Snow
+
+[390 rows x 8 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{23}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{n}{data}\PY{o}{.}\PY{n}{Weather}\PY{o}{.}\PY{n}{str}\PY{o}{.}\PY{n}{contains}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Snow}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{23}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+             Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+41      1/2/2012 17:00    -2.1              -9.5         57               22
+44      1/2/2012 20:00    -5.6             -13.4         54               24
+45      1/2/2012 21:00    -5.8             -12.8         58               26
+47      1/2/2012 23:00    -7.4             -14.1         59               17
+48       1/3/2012 0:00    -9.0             -16.0         57               28
+{\ldots}                {\ldots}     {\ldots}               {\ldots}        {\ldots}              {\ldots}
+8779  12/31/2012 19:00     0.1              -2.7         81               30
+8780  12/31/2012 20:00     0.2              -2.4         83               24
+8781  12/31/2012 21:00    -0.5              -1.5         93               28
+8782  12/31/2012 22:00    -0.2              -1.8         89               28
+8783  12/31/2012 23:00     0.0              -2.1         86               30
+
+      Visibility\_km  Press\_kPa       Weather
+41             25.0      99.66  Snow Showers
+44             25.0     100.07  Snow Showers
+45             25.0     100.15  Snow Showers
+47             19.3     100.27  Snow Showers
+48             25.0     100.35  Snow Showers
+{\ldots}             {\ldots}        {\ldots}           {\ldots}
+8779            9.7     100.13          Snow
+8780            9.7     100.03          Snow
+8781            4.8      99.95          Snow
+8782            9.7      99.91          Snow
+8783           11.3      99.89          Snow
+
+[583 rows x 8 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Find the intenseof Drizzle in weather}
+\PY{n}{data}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+0  1/1/2012 0:00    -1.8              -3.9         86                4
+1  1/1/2012 1:00    -1.8              -3.7         87                4
+2  1/1/2012 2:00    -1.8              -3.4         89                7
+3  1/1/2012 3:00    -1.5              -3.2         88                6
+4  1/1/2012 4:00    -1.5              -3.3         88                7
+
+   Visibility\_km  Press\_kPa               Weather
+0            8.0     101.24                   Fog
+1            8.0     101.24                   Fog
+2            4.0     101.26  Freezing Drizzle,Fog
+3            4.0     101.27  Freezing Drizzle,Fog
+4            4.8     101.23                   Fog
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{o}{.}\PY{n}{Weather}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Mainly Clear                               2106
+Mostly Cloudy                              2069
+Cloudy                                     1728
+Clear                                      1326
+Snow                                        390
+Rain                                        306
+Rain Showers                                188
+Fog                                         150
+Rain,Fog                                    116
+Drizzle,Fog                                  80
+Snow Showers                                 60
+Drizzle                                      41
+Snow,Fog                                     37
+Snow,Blowing Snow                            19
+Rain,Snow                                    18
+Thunderstorms,Rain Showers                   16
+Haze                                         16
+Drizzle,Snow,Fog                             15
+Freezing Rain                                14
+Freezing Drizzle,Snow                        11
+Freezing Drizzle                              7
+Snow,Ice Pellets                              6
+Freezing Drizzle,Fog                          6
+Snow,Haze                                     5
+Freezing Rain,Fog                             4
+Rain,Snow,Ice Pellets                         4
+Freezing Fog                                  4
+Moderate Snow                                 4
+Snow Showers,Fog                              4
+Thunderstorms,Rain                            3
+Thunderstorms,Rain Showers,Fog                3
+Freezing Drizzle,Haze                         3
+Rain,Haze                                     3
+Moderate Snow,Blowing Snow                    2
+Thunderstorms                                 2
+Rain Showers,Snow Showers                     2
+Freezing Rain,Haze                            2
+Drizzle,Snow                                  2
+Thunderstorms,Moderate Rain Showers,Fog       1
+Snow Pellets                                  1
+Rain,Snow Grains                              1
+Rain,Snow,Fog                                 1
+Thunderstorms,Heavy Rain Showers              1
+Rain Showers,Fog                              1
+Freezing Rain,Ice Pellets,Fog                 1
+Drizzle,Ice Pellets,Fog                       1
+Thunderstorms,Rain,Fog                        1
+Freezing Rain,Snow Grains                     1
+Rain,Ice Pellets                              1
+Moderate Rain,Fog                             1
+Name: Weather, dtype: int64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} filtering of Drizzle}
+\PY{n}{data}\PY{p}{[}\PY{n}{data}\PY{o}{.}\PY{n}{Weather} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Drizzle}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+             Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+549    1/23/2012 21:00     3.3               1.7         89               24
+1132    2/17/2012 4:00     2.3               1.1         92               20
+2105   3/28/2012 17:00     1.5               0.2         91               19
+2106   3/28/2012 18:00     1.3              -0.2         90               13
+2919    5/1/2012 15:00    10.4               7.9         84                9
+3413    5/22/2012 5:00    18.8              16.4         86                4
+3689    6/2/2012 17:00    13.5              11.0         85               17
+3692    6/2/2012 20:00    12.9              10.5         85                4
+4226    6/25/2012 2:00    15.7              13.8         88                7
+4262   6/26/2012 14:00    16.3              11.6         74               20
+5455    8/15/2012 7:00    18.8              17.7         93                0
+6540   9/29/2012 12:00    12.6               9.9         84               22
+6541   9/29/2012 13:00    12.4               9.8         84               19
+6543   9/29/2012 15:00    11.6              10.1         91               20
+6545   9/29/2012 17:00    11.1              10.4         95               22
+6546   9/29/2012 18:00    10.8               9.8         94               20
+6551   9/29/2012 23:00    10.8               9.7         93               17
+6555    9/30/2012 3:00    10.4               9.6         95               17
+6650    10/4/2012 2:00    14.7              14.1         96               11
+6898  10/14/2012 10:00     7.3               5.7         90                6
+7310  10/31/2012 14:00    10.3               8.8         90               11
+7334   11/1/2012 14:00     8.4               5.3         81               17
+7355   11/2/2012 11:00     4.2               2.8         91               22
+7356   11/2/2012 12:00     4.3               2.9         91               15
+7357   11/2/2012 13:00     4.3               3.1         92               20
+7380   11/3/2012 12:00     5.4               2.0         79               22
+7381   11/3/2012 13:00     5.1               2.6         84               22
+7382   11/3/2012 14:00     5.5               2.6         82               20
+7383   11/3/2012 15:00     5.4               2.7         83               24
+7384   11/3/2012 16:00     5.0               2.7         85               20
+7385   11/3/2012 17:00     5.0               2.3         83               20
+7386   11/3/2012 18:00     4.7               2.4         85               13
+7387   11/3/2012 19:00     4.8               2.3         84               15
+8440  12/17/2012 16:00     1.3               0.4         94               15
+8442  12/17/2012 18:00     2.0               0.6         90               19
+8443  12/17/2012 19:00     2.1               0.4         88               15
+8444  12/17/2012 20:00     2.3               0.5         88               19
+8468  12/18/2012 20:00     1.3               0.7         96               15
+8487  12/19/2012 15:00     1.3              -0.1         90                9
+8489  12/19/2012 17:00     1.1              -0.2         91                6
+8545   12/22/2012 1:00     1.2               0.1         92               30
+
+      Visibility\_km  Press\_kPa  Weather
+549            11.3     100.22  Drizzle
+1132            8.0     100.47  Drizzle
+2105           16.1      99.53  Drizzle
+2106           16.1      99.63  Drizzle
+2919            9.7     101.16  Drizzle
+3413           12.9     100.90  Drizzle
+3689           24.1     100.36  Drizzle
+3692           19.3     100.40  Drizzle
+4226           12.9     100.32  Drizzle
+4262           19.3     100.07  Drizzle
+5455           24.1     100.69  Drizzle
+6540           24.1     101.18  Drizzle
+6541           24.1     101.15  Drizzle
+6543           19.3     101.11  Drizzle
+6545            9.7     101.12  Drizzle
+6546           16.1     101.12  Drizzle
+6551           12.9     101.06  Drizzle
+6555           12.9     100.92  Drizzle
+6650            6.4     101.56  Drizzle
+6898           16.1     101.14  Drizzle
+7310           12.9      99.28  Drizzle
+7334           19.3      99.22  Drizzle
+7355           24.1      99.67  Drizzle
+7356           24.1      99.68  Drizzle
+7357           24.1      99.70  Drizzle
+7380           24.1     100.45  Drizzle
+7381           24.1     100.46  Drizzle
+7382           24.1     100.47  Drizzle
+7383           24.1     100.52  Drizzle
+7384           24.1     100.57  Drizzle
+7385           24.1     100.62  Drizzle
+7386           25.0     100.66  Drizzle
+7387           25.0     100.69  Drizzle
+8440           12.9     100.62  Drizzle
+8442           16.1     100.61  Drizzle
+8443           16.1     100.63  Drizzle
+8444           16.1     100.64  Drizzle
+8468            6.4      99.54  Drizzle
+8487           24.1     100.83  Drizzle
+8489           16.1     101.04  Drizzle
+8545           12.9      97.84  Drizzle
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{n}{data}\PY{o}{.}\PY{n}{Weather}\PY{o}{.}\PY{n}{str}\PY{o}{.}\PY{n}{contains}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Drizzle}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+             Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+2        1/1/2012 2:00    -1.8              -3.4         89                7
+3        1/1/2012 3:00    -1.5              -3.2         88                6
+152      1/7/2012 8:00    -6.4              -9.0         82                9
+155     1/7/2012 11:00    -5.4              -7.7         84                9
+156     1/7/2012 12:00    -5.5              -7.8         84               13
+{\ldots}                {\ldots}     {\ldots}               {\ldots}        {\ldots}              {\ldots}
+8685  12/27/2012 21:00    -3.7              -4.8         92               24
+8686  12/27/2012 22:00    -3.8              -4.6         94               20
+8688   12/28/2012 0:00    -4.2              -5.7         89               19
+8689   12/28/2012 1:00    -4.4              -6.6         85               15
+8690   12/28/2012 2:00    -4.3              -6.3         86               11
+
+      Visibility\_km  Press\_kPa                Weather
+2               4.0     101.26   Freezing Drizzle,Fog
+3               4.0     101.27   Freezing Drizzle,Fog
+152             8.0     100.10   Freezing Drizzle,Fog
+155             9.7     100.08       Freezing Drizzle
+156             9.7     100.05       Freezing Drizzle
+{\ldots}             {\ldots}        {\ldots}                    {\ldots}
+8685            4.8     100.62  Freezing Drizzle,Snow
+8686            4.8     100.65  Freezing Drizzle,Snow
+8688            8.0     100.78  Freezing Drizzle,Snow
+8689            6.4     100.83  Freezing Drizzle,Snow
+8690           12.9     100.93  Freezing Drizzle,Snow
+
+[166 rows x 8 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{30}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}find all the intance where the wind speed is 24 and visibility is 25}
+\PY{n}{data}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{30}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+0  1/1/2012 0:00    -1.8              -3.9         86                4
+1  1/1/2012 1:00    -1.8              -3.7         87                4
+2  1/1/2012 2:00    -1.8              -3.4         89                7
+3  1/1/2012 3:00    -1.5              -3.2         88                6
+4  1/1/2012 4:00    -1.5              -3.3         88                7
+
+   Visibility\_km  Press\_kPa               Weather
+0            8.0     101.24                   Fog
+1            8.0     101.24                   Fog
+2            4.0     101.26  Freezing Drizzle,Fog
+3            4.0     101.27  Freezing Drizzle,Fog
+4            4.8     101.23                   Fog
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{41}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Visibility\PYZus{}km}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+m+mi}{25}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{41}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+            Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+20     1/1/2012 20:00     3.2               1.3         87               19
+21     1/1/2012 21:00     4.0               1.7         85               20
+23     1/1/2012 23:00     5.3               2.0         79               30
+24      1/2/2012 0:00     5.2               1.5         77               35
+25      1/2/2012 1:00     4.6               0.0         72               39
+{\ldots}               {\ldots}     {\ldots}               {\ldots}        {\ldots}              {\ldots}
+8762  12/31/2012 2:00   -10.1             -13.4         77                9
+8763  12/31/2012 3:00   -11.8             -14.4         81                6
+8764  12/31/2012 4:00   -10.5             -12.8         83               11
+8765  12/31/2012 5:00   -10.2             -12.4         84                6
+8766  12/31/2012 6:00    -9.7             -11.7         85                4
+
+      Visibility\_km  Press\_kPa        Weather
+20             25.0      99.50         Cloudy
+21             25.0      99.39         Cloudy
+23             25.0      99.31         Cloudy
+24             25.0      99.26   Rain Showers
+25             25.0      99.26         Cloudy
+{\ldots}             {\ldots}        {\ldots}            {\ldots}
+8762           25.0     101.45         Cloudy
+8763           25.0     101.42  Mostly Cloudy
+8764           25.0     101.34         Cloudy
+8765           25.0     101.28         Cloudy
+8766           25.0     101.23         Cloudy
+
+[3324 rows x 8 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{42}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Wind Speed\PYZus{}km/h}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+m+mi}{24}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{42}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+             Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+22      1/1/2012 22:00     4.4               1.9         84               24
+40      1/2/2012 16:00    -0.7              -8.7         55               24
+43      1/2/2012 19:00    -4.8             -12.1         57               24
+44      1/2/2012 20:00    -5.6             -13.4         54               24
+52       1/3/2012 4:00   -12.6             -20.1         53               24
+{\ldots}                {\ldots}     {\ldots}               {\ldots}        {\ldots}              {\ldots}
+8733  12/29/2012 21:00    -9.8             -11.8         85               24
+8746  12/30/2012 10:00   -12.4             -16.0         74               24
+8754  12/30/2012 18:00   -12.6             -16.0         76               24
+8756  12/30/2012 20:00   -13.8             -16.5         80               24
+8780  12/31/2012 20:00     0.2              -2.4         83               24
+
+      Visibility\_km  Press\_kPa        Weather
+22             19.3      99.32   Rain Showers
+40             24.1      99.50  Mostly Cloudy
+43             25.0     100.00  Mostly Cloudy
+44             25.0     100.07   Snow Showers
+52             25.0     100.68         Cloudy
+{\ldots}             {\ldots}        {\ldots}            {\ldots}
+8733            8.0     100.24       Snow,Fog
+8746           24.1     100.82         Cloudy
+8754           25.0     101.36   Mainly Clear
+8756           25.0     101.52          Clear
+8780            9.7     100.03           Snow
+
+[374 rows x 8 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{53}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{p}{(}\PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Visibility\PYZus{}km}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{==} \PY{l+m+mi}{25}\PY{p}{)}  \PY{o}{\PYZam{}} \PY{p}{(}\PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Wind Speed\PYZus{}km/h}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{l+m+mi}{24}\PY{p}{)}\PY{p}{]}\PY{c+c1}{\PYZsh{}answer}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{53}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+             Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+23      1/1/2012 23:00     5.3               2.0         79               30
+24       1/2/2012 0:00     5.2               1.5         77               35
+25       1/2/2012 1:00     4.6               0.0         72               39
+26       1/2/2012 2:00     3.9              -0.9         71               32
+27       1/2/2012 3:00     3.7              -1.5         69               33
+{\ldots}                {\ldots}     {\ldots}               {\ldots}        {\ldots}              {\ldots}
+8705  12/28/2012 17:00    -8.6             -12.0         76               26
+8753  12/30/2012 17:00   -12.1             -15.8         74               28
+8755  12/30/2012 19:00   -13.4             -16.5         77               26
+8759  12/30/2012 23:00   -12.1             -15.1         78               28
+8760   12/31/2012 0:00   -11.1             -14.4         77               26
+
+      Visibility\_km  Press\_kPa        Weather
+23             25.0      99.31         Cloudy
+24             25.0      99.26   Rain Showers
+25             25.0      99.26         Cloudy
+26             25.0      99.26  Mostly Cloudy
+27             25.0      99.30  Mostly Cloudy
+{\ldots}             {\ldots}        {\ldots}            {\ldots}
+8705           25.0     101.34   Mainly Clear
+8753           25.0     101.26   Mainly Clear
+8755           25.0     101.47   Mainly Clear
+8759           25.0     101.52  Mostly Cloudy
+8760           25.0     101.51         Cloudy
+
+[308 rows x 8 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{54}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}find the mean value of each column againsts the weather}
+\PY{n}{data}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{54}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+0  1/1/2012 0:00    -1.8              -3.9         86                4
+1  1/1/2012 1:00    -1.8              -3.7         87                4
+2  1/1/2012 2:00    -1.8              -3.4         89                7
+3  1/1/2012 3:00    -1.5              -3.2         88                6
+4  1/1/2012 4:00    -1.5              -3.3         88                7
+
+   Visibility\_km  Press\_kPa               Weather
+0            8.0     101.24                   Fog
+1            8.0     101.24                   Fog
+2            4.0     101.26  Freezing Drizzle,Fog
+3            4.0     101.27  Freezing Drizzle,Fog
+4            4.8     101.23                   Fog
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{59}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{o}{.}\PY{n}{groupby}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Weather}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)} \PY{c+c1}{\PYZsh{}answer}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{59}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                                            Temp\_C  Dew Point Temp\_C  \textbackslash{}
+Weather
+Clear                                     6.825716          0.089367
+Cloudy                                    7.970544          2.375810
+Drizzle                                   7.353659          5.504878
+Drizzle,Fog                               8.067500          7.033750
+Drizzle,Ice Pellets,Fog                   0.400000         -0.700000
+Drizzle,Snow                              1.050000          0.150000
+Drizzle,Snow,Fog                          0.693333          0.120000
+Fog                                       4.303333          3.159333
+Freezing Drizzle                         -5.657143         -8.000000
+Freezing Drizzle,Fog                     -2.533333         -4.183333
+Freezing Drizzle,Haze                    -5.433333         -8.000000
+Freezing Drizzle,Snow                    -5.109091         -7.072727
+Freezing Fog                             -7.575000         -9.250000
+Freezing Rain                            -3.885714         -6.078571
+Freezing Rain,Fog                        -2.225000         -3.750000
+Freezing Rain,Haze                       -4.900000         -7.450000
+Freezing Rain,Ice Pellets,Fog            -2.600000         -3.700000
+Freezing Rain,Snow Grains                -5.000000         -7.300000
+Haze                                     -0.200000         -2.975000
+Mainly Clear                             12.558927          4.581671
+Moderate Rain,Fog                         1.700000          0.800000
+Moderate Snow                            -5.525000         -7.250000
+Moderate Snow,Blowing Snow               -5.450000         -6.500000
+Mostly Cloudy                            10.574287          3.131174
+Rain                                      9.786275          7.042810
+Rain Showers                             13.722340          9.187766
+Rain Showers,Fog                         12.800000         12.100000
+Rain Showers,Snow Showers                 2.150000         -1.500000
+Rain,Fog                                  8.273276          7.219828
+Rain,Haze                                 4.633333          2.066667
+Rain,Ice Pellets                          0.600000         -0.600000
+Rain,Snow                                 1.055556         -0.566667
+Rain,Snow Grains                          1.900000         -2.100000
+Rain,Snow,Fog                             0.800000          0.300000
+Rain,Snow,Ice Pellets                     1.100000         -0.175000
+Snow                                     -4.524103         -7.623333
+Snow Pellets                              0.700000         -6.400000
+Snow Showers                             -3.506667         -7.866667
+Snow Showers,Fog                        -10.675000        -11.900000
+Snow,Blowing Snow                        -5.410526         -7.621053
+Snow,Fog                                 -5.075676         -6.364865
+Snow,Haze                                -4.020000         -6.860000
+Snow,Ice Pellets                         -1.883333         -3.666667
+Thunderstorms                            24.150000         19.750000
+Thunderstorms,Heavy Rain Showers         10.900000          9.000000
+Thunderstorms,Moderate Rain Showers,Fog  19.600000         18.500000
+Thunderstorms,Rain                       20.433333         18.533333
+Thunderstorms,Rain Showers               20.037500         17.618750
+Thunderstorms,Rain Showers,Fog           21.600000         18.700000
+Thunderstorms,Rain,Fog                   20.600000         18.600000
+
+                                         Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+Weather
+Clear                                    64.497738        10.557315
+Cloudy                                   69.592593        16.127315
+Drizzle                                  88.243902        16.097561
+Drizzle,Fog                              93.275000        11.862500
+Drizzle,Ice Pellets,Fog                  92.000000        20.000000
+Drizzle,Snow                             93.500000        14.000000
+Drizzle,Snow,Fog                         95.866667        15.533333
+Fog                                      92.286667         7.946667
+Freezing Drizzle                         83.571429        16.571429
+Freezing Drizzle,Fog                     88.500000        17.000000
+Freezing Drizzle,Haze                    82.000000        10.333333
+Freezing Drizzle,Snow                    86.090909        16.272727
+Freezing Fog                             87.750000         4.750000
+Freezing Rain                            84.642857        19.214286
+Freezing Rain,Fog                        89.500000        15.500000
+Freezing Rain,Haze                       82.500000         7.500000
+Freezing Rain,Ice Pellets,Fog            92.000000        28.000000
+Freezing Rain,Snow Grains                84.000000        32.000000
+Haze                                     81.625000        10.437500
+Mainly Clear                             60.667142        14.144824
+Moderate Rain,Fog                        94.000000        17.000000
+Moderate Snow                            87.750000        33.750000
+Moderate Snow,Blowing Snow               92.500000        40.000000
+Mostly Cloudy                            62.102465        15.813920
+Rain                                     83.624183        19.254902
+Rain Showers                             75.159574        17.132979
+Rain Showers,Fog                         96.000000        13.000000
+Rain Showers,Snow Showers                76.500000        22.500000
+Rain,Fog                                 93.189655        14.793103
+Rain,Haze                                83.333333        11.666667
+Rain,Ice Pellets                         92.000000        24.000000
+Rain,Snow                                89.000000        28.388889
+Rain,Snow Grains                         75.000000        26.000000
+Rain,Snow,Fog                            96.000000         9.000000
+Rain,Snow,Ice Pellets                    91.500000        23.250000
+Snow                                     79.307692        20.038462
+Snow Pellets                             59.000000        35.000000
+Snow Showers                             72.350000        19.233333
+Snow Showers,Fog                         90.750000        13.750000
+Snow,Blowing Snow                        84.473684        34.842105
+Snow,Fog                                 90.675676        17.324324
+Snow,Haze                                80.600000         5.000000
+Snow,Ice Pellets                         87.666667        23.833333
+Thunderstorms                            77.000000         7.500000
+Thunderstorms,Heavy Rain Showers         88.000000         9.000000
+Thunderstorms,Moderate Rain Showers,Fog  93.000000        15.000000
+Thunderstorms,Rain                       89.000000        15.666667
+Thunderstorms,Rain Showers               86.375000        18.312500
+Thunderstorms,Rain Showers,Fog           84.000000        19.666667
+Thunderstorms,Rain,Fog                   88.000000        19.000000
+
+                                         Visibility\_km   Press\_kPa
+Weather
+Clear                                        30.153243  101.587443
+Cloudy                                       26.625752  100.911441
+Drizzle                                      17.931707  100.435366
+Drizzle,Fog                                   5.257500  100.786625
+Drizzle,Ice Pellets,Fog                       4.000000  100.790000
+Drizzle,Snow                                 10.500000  100.890000
+Drizzle,Snow,Fog                              5.513333   99.281333
+Fog                                           6.248000  101.184067
+Freezing Drizzle                              9.200000  100.202857
+Freezing Drizzle,Fog                          5.266667  100.441667
+Freezing Drizzle,Haze                         2.666667  100.316667
+Freezing Drizzle,Snow                         5.872727  100.520909
+Freezing Fog                                  0.650000  102.320000
+Freezing Rain                                 8.242857   99.647143
+Freezing Rain,Fog                             7.550000   99.945000
+Freezing Rain,Haze                            2.400000  100.375000
+Freezing Rain,Ice Pellets,Fog                 8.000000  100.950000
+Freezing Rain,Snow Grains                     4.800000   98.560000
+Haze                                          7.831250  101.482500
+Mainly Clear                                 34.264862  101.248832
+Moderate Rain,Fog                             6.400000   99.980000
+Moderate Snow                                 0.750000  100.275000
+Moderate Snow,Blowing Snow                    0.600000  100.570000
+Mostly Cloudy                                31.253842  101.025288
+Rain                                         18.856536  100.233333
+Rain Showers                                 22.816489  100.404043
+Rain Showers,Fog                              6.400000   99.830000
+Rain Showers,Snow Showers                    21.700000  101.100000
+Rain,Fog                                      6.873276  100.500862
+Rain,Haze                                     6.700000  100.540000
+Rain,Ice Pellets                              9.700000  100.120000
+Rain,Snow                                    11.672222   99.951111
+Rain,Snow Grains                             25.000000  100.600000
+Rain,Snow,Fog                                 6.400000  100.730000
+Rain,Snow,Ice Pellets                         6.000000  100.105000
+Snow                                         11.171795  100.536103
+Snow Pellets                                  2.400000   99.700000
+Snow Showers                                 20.158333  100.963500
+Snow Showers,Fog                              7.025000  101.292500
+Snow,Blowing Snow                             4.105263   99.704737
+Snow,Fog                                      4.537838  100.688649
+Snow,Haze                                     4.640000  100.782000
+Snow,Ice Pellets                              7.416667  100.548333
+Thunderstorms                                24.550000  100.230000
+Thunderstorms,Heavy Rain Showers              2.400000  100.260000
+Thunderstorms,Moderate Rain Showers,Fog       3.200000  100.010000
+Thunderstorms,Rain                           19.833333  100.420000
+Thunderstorms,Rain Showers                   15.893750  100.233750
+Thunderstorms,Rain Showers,Fog                9.700000  100.063333
+Thunderstorms,Rain,Fog                        4.800000  100.080000
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{60}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} what is the minium and maximum value against its weather }
+\PY{n}{data}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{60}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+0  1/1/2012 0:00    -1.8              -3.9         86                4
+1  1/1/2012 1:00    -1.8              -3.7         87                4
+2  1/1/2012 2:00    -1.8              -3.4         89                7
+3  1/1/2012 3:00    -1.5              -3.2         88                6
+4  1/1/2012 4:00    -1.5              -3.3         88                7
+
+   Visibility\_km  Press\_kPa               Weather
+0            8.0     101.24                   Fog
+1            8.0     101.24                   Fog
+2            4.0     101.26  Freezing Drizzle,Fog
+3            4.0     101.27  Freezing Drizzle,Fog
+4            4.8     101.23                   Fog
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{61}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{o}{.}\PY{n}{groupby}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Weather}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{min}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{61}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                                                Date/Time  Temp\_C  \textbackslash{}
+Weather
+Clear                                      1/11/2012 1:00   -23.3
+Cloudy                                     1/1/2012 17:00   -21.4
+Drizzle                                   1/23/2012 21:00     1.1
+Drizzle,Fog                               1/23/2012 20:00     0.0
+Drizzle,Ice Pellets,Fog                   12/17/2012 9:00     0.4
+Drizzle,Snow                             12/17/2012 15:00     0.9
+Drizzle,Snow,Fog                         12/18/2012 21:00     0.3
+Fog                                         1/1/2012 0:00   -16.0
+Freezing Drizzle                          1/13/2012 10:00    -9.0
+Freezing Drizzle,Fog                        1/1/2012 2:00    -6.4
+Freezing Drizzle,Haze                      2/1/2012 11:00    -5.8
+Freezing Drizzle,Snow                      1/13/2012 3:00    -8.3
+Freezing Fog                               1/22/2012 6:00   -19.0
+Freezing Rain                             1/13/2012 11:00    -6.5
+Freezing Rain,Fog                         1/17/2012 23:00    -6.1
+Freezing Rain,Haze                         2/1/2012 14:00    -4.9
+Freezing Rain,Ice Pellets,Fog             12/17/2012 3:00    -2.6
+Freezing Rain,Snow Grains                  1/13/2012 9:00    -5.0
+Haze                                      1/22/2012 12:00   -11.5
+Mainly Clear                              1/10/2012 11:00   -22.8
+Moderate Rain,Fog                         12/10/2012 8:00     1.7
+Moderate Snow                             1/12/2012 15:00    -6.3
+Moderate Snow,Blowing Snow               12/27/2012 10:00    -5.5
+Mostly Cloudy                              1/1/2012 16:00   -23.2
+Rain                                       1/1/2012 18:00     0.3
+Rain Showers                               1/1/2012 22:00     1.6
+Rain Showers,Fog                          10/20/2012 3:00    12.8
+Rain Showers,Snow Showers                  11/4/2012 8:00     2.1
+Rain,Fog                                  1/23/2012 18:00     0.0
+Rain,Haze                                  3/13/2012 7:00     4.0
+Rain,Ice Pellets                          12/18/2012 5:00     0.6
+Rain,Snow                                  1/10/2012 5:00     0.6
+Rain,Snow Grains                          12/21/2012 0:00     1.9
+Rain,Snow,Fog                             12/8/2012 21:00     0.8
+Rain,Snow,Ice Pellets                     12/21/2012 1:00     0.9
+Snow                                       1/10/2012 1:00   -16.7
+Snow Pellets                             11/24/2012 15:00     0.7
+Snow Showers                               1/12/2012 7:00   -13.3
+Snow Showers,Fog                          12/26/2012 9:00   -11.3
+Snow,Blowing Snow                         1/13/2012 21:00   -12.0
+Snow,Fog                                 12/16/2012 15:00   -10.1
+Snow,Haze                                  2/1/2012 17:00    -4.3
+Snow,Ice Pellets                          12/10/2012 3:00    -4.3
+Thunderstorms                              7/16/2012 1:00    21.6
+Thunderstorms,Heavy Rain Showers           5/29/2012 6:00    10.9
+Thunderstorms,Moderate Rain Showers,Fog    7/17/2012 6:00    19.6
+Thunderstorms,Rain                        5/25/2012 20:00    19.4
+Thunderstorms,Rain Showers                5/29/2012 16:00    11.0
+Thunderstorms,Rain Showers,Fog             6/29/2012 3:00    19.5
+Thunderstorms,Rain,Fog                     7/17/2012 5:00    20.6
+
+                                         Dew Point Temp\_C  Rel Hum\_\%  \textbackslash{}
+Weather
+Clear                                               -28.5         20
+Cloudy                                              -26.8         18
+Drizzle                                              -0.2         74
+Drizzle,Fog                                          -1.6         85
+Drizzle,Ice Pellets,Fog                              -0.7         92
+Drizzle,Snow                                          0.1         92
+Drizzle,Snow,Fog                                     -0.1         92
+Fog                                                 -17.2         80
+Freezing Drizzle                                    -12.2         78
+Freezing Drizzle,Fog                                 -9.0         82
+Freezing Drizzle,Haze                                -8.3         81
+Freezing Drizzle,Snow                               -10.4         79
+Freezing Fog                                        -22.9         71
+Freezing Rain                                        -9.0         81
+Freezing Rain,Fog                                    -8.7         82
+Freezing Rain,Haze                                   -7.5         82
+Freezing Rain,Ice Pellets,Fog                        -3.7         92
+Freezing Rain,Snow Grains                            -7.3         84
+Haze                                                -16.0         68
+Mainly Clear                                        -28.0         20
+Moderate Rain,Fog                                     0.8         94
+Moderate Snow                                        -7.6         83
+Moderate Snow,Blowing Snow                           -6.6         92
+Mostly Cloudy                                       -28.5         18
+Rain                                                 -5.7         40
+Rain Showers                                         -7.2         37
+Rain Showers,Fog                                     12.1         96
+Rain Showers,Snow Showers                            -1.8         75
+Rain,Fog                                             -1.2         83
+Rain,Haze                                             1.0         81
+Rain,Ice Pellets                                     -0.6         92
+Rain,Snow                                            -1.7         81
+Rain,Snow Grains                                     -2.1         75
+Rain,Snow,Fog                                         0.3         96
+Rain,Snow,Ice Pellets                                -0.7         88
+Snow                                                -24.6         41
+Snow Pellets                                         -6.4         59
+Snow Showers                                        -19.3         52
+Snow Showers,Fog                                    -12.7         89
+Snow,Blowing Snow                                   -16.2         70
+Snow,Fog                                            -12.0         77
+Snow,Haze                                            -7.2         80
+Snow,Ice Pellets                                     -5.9         76
+Thunderstorms                                        19.4         67
+Thunderstorms,Heavy Rain Showers                      9.0         88
+Thunderstorms,Moderate Rain Showers,Fog              18.5         93
+Thunderstorms,Rain                                   18.2         83
+Thunderstorms,Rain Showers                            7.0         68
+Thunderstorms,Rain Showers,Fog                       16.1         80
+Thunderstorms,Rain,Fog                               18.6         88
+
+                                         Wind Speed\_km/h  Visibility\_km  \textbackslash{}
+Weather
+Clear                                                  0           11.3
+Cloudy                                                 0           11.3
+Drizzle                                                0            6.4
+Drizzle,Fog                                            0            1.0
+Drizzle,Ice Pellets,Fog                               20            4.0
+Drizzle,Snow                                           9            9.7
+Drizzle,Snow,Fog                                       7            2.4
+Fog                                                    0            0.2
+Freezing Drizzle                                       6            4.8
+Freezing Drizzle,Fog                                   6            3.6
+Freezing Drizzle,Haze                                  9            2.0
+Freezing Drizzle,Snow                                  6            2.4
+Freezing Fog                                           0            0.2
+Freezing Rain                                          7            2.8
+Freezing Rain,Fog                                      7            2.8
+Freezing Rain,Haze                                     6            2.0
+Freezing Rain,Ice Pellets,Fog                         28            8.0
+Freezing Rain,Snow Grains                             32            4.8
+Haze                                                   0            4.8
+Mainly Clear                                           0           12.9
+Moderate Rain,Fog                                     17            6.4
+Moderate Snow                                         26            0.6
+Moderate Snow,Blowing Snow                            39            0.6
+Mostly Cloudy                                          0           11.3
+Rain                                                   0            4.0
+Rain Showers                                           0            6.4
+Rain Showers,Fog                                      13            6.4
+Rain Showers,Snow Showers                             17           19.3
+Rain,Fog                                               0            2.0
+Rain,Haze                                              7            4.0
+Rain,Ice Pellets                                      24            9.7
+Rain,Snow                                             13            2.4
+Rain,Snow Grains                                      26           25.0
+Rain,Snow,Fog                                          9            6.4
+Rain,Snow,Ice Pellets                                 17            4.8
+Snow                                                   0            1.0
+Snow Pellets                                          35            2.4
+Snow Showers                                           0            2.4
+Snow Showers,Fog                                       7            4.0
+Snow,Blowing Snow                                     24            0.6
+Snow,Fog                                               4            1.2
+Snow,Haze                                              0            4.0
+Snow,Ice Pellets                                      19            2.8
+Thunderstorms                                          0           24.1
+Thunderstorms,Heavy Rain Showers                       9            2.4
+Thunderstorms,Moderate Rain Showers,Fog               15            3.2
+Thunderstorms,Rain                                     4           16.1
+Thunderstorms,Rain Showers                             7            6.4
+Thunderstorms,Rain Showers,Fog                         7            9.7
+Thunderstorms,Rain,Fog                                19            4.8
+
+                                         Press\_kPa
+Weather
+Clear                                        99.52
+Cloudy                                       98.39
+Drizzle                                      97.84
+Drizzle,Fog                                  98.65
+Drizzle,Ice Pellets,Fog                     100.79
+Drizzle,Snow                                100.63
+Drizzle,Snow,Fog                             97.79
+Fog                                          98.31
+Freezing Drizzle                             98.44
+Freezing Drizzle,Fog                         98.74
+Freezing Drizzle,Haze                       100.28
+Freezing Drizzle,Snow                        99.19
+Freezing Fog                                101.97
+Freezing Rain                                98.22
+Freezing Rain,Fog                            98.32
+Freezing Rain,Haze                          100.34
+Freezing Rain,Ice Pellets,Fog               100.95
+Freezing Rain,Snow Grains                    98.56
+Haze                                        100.35
+Mainly Clear                                 98.67
+Moderate Rain,Fog                            99.98
+Moderate Snow                                99.88
+Moderate Snow,Blowing Snow                  100.50
+Mostly Cloudy                                98.36
+Rain                                         97.52
+Rain Showers                                 98.51
+Rain Showers,Fog                             99.83
+Rain Showers,Snow Showers                   101.09
+Rain,Fog                                     98.61
+Rain,Haze                                   100.50
+Rain,Ice Pellets                            100.12
+Rain,Snow                                    98.18
+Rain,Snow Grains                            100.60
+Rain,Snow,Fog                               100.73
+Rain,Snow,Ice Pellets                        99.85
+Snow                                         97.75
+Snow Pellets                                 99.70
+Snow Showers                                 99.49
+Snow Showers,Fog                            100.63
+Snow,Blowing Snow                            98.11
+Snow,Fog                                     99.38
+Snow,Haze                                   100.61
+Snow,Ice Pellets                             99.40
+Thunderstorms                                99.84
+Thunderstorms,Heavy Rain Showers            100.26
+Thunderstorms,Moderate Rain Showers,Fog     100.01
+Thunderstorms,Rain                          100.19
+Thunderstorms,Rain Showers                   99.65
+Thunderstorms,Rain Showers,Fog               99.71
+Thunderstorms,Rain,Fog                      100.08
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{62}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{o}{.}\PY{n}{groupby}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Weather}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{62}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                                                Date/Time  Temp\_C  \textbackslash{}
+Weather
+Clear                                       9/9/2012 5:00    32.8
+Cloudy                                     9/9/2012 23:00    30.5
+Drizzle                                    9/30/2012 3:00    18.8
+Drizzle,Fog                                9/30/2012 2:00    19.9
+Drizzle,Ice Pellets,Fog                   12/17/2012 9:00     0.4
+Drizzle,Snow                             12/19/2012 18:00     1.2
+Drizzle,Snow,Fog                          12/22/2012 3:00     1.1
+Fog                                        9/22/2012 0:00    20.8
+Freezing Drizzle                            2/1/2012 5:00    -2.3
+Freezing Drizzle,Fog                      12/10/2012 5:00    -0.3
+Freezing Drizzle,Haze                      2/1/2012 13:00    -5.0
+Freezing Drizzle,Snow                      3/2/2012 12:00    -3.3
+Freezing Fog                               3/17/2012 6:00    -0.1
+Freezing Rain                               2/1/2012 7:00     0.3
+Freezing Rain,Fog                         12/17/2012 1:00     0.1
+Freezing Rain,Haze                         2/1/2012 15:00    -4.9
+Freezing Rain,Ice Pellets,Fog             12/17/2012 3:00    -2.6
+Freezing Rain,Snow Grains                  1/13/2012 9:00    -5.0
+Haze                                      3/13/2012 23:00    14.1
+Mainly Clear                                9/9/2012 9:00    33.0
+Moderate Rain,Fog                         12/10/2012 8:00     1.7
+Moderate Snow                             12/27/2012 9:00    -4.9
+Moderate Snow,Blowing Snow               12/27/2012 12:00    -5.4
+Mostly Cloudy                               9/9/2012 2:00    32.4
+Rain                                        9/5/2012 2:00    22.8
+Rain Showers                               9/8/2012 16:00    26.4
+Rain Showers,Fog                          10/20/2012 3:00    12.8
+Rain Showers,Snow Showers                 12/5/2012 10:00     2.2
+Rain,Fog                                  9/30/2012 23:00    21.7
+Rain,Haze                                  3/13/2012 9:00     5.5
+Rain,Ice Pellets                          12/18/2012 5:00     0.6
+Rain,Snow                                  4/23/2012 3:00     1.7
+Rain,Snow Grains                          12/21/2012 0:00     1.9
+Rain,Snow,Fog                             12/8/2012 21:00     0.8
+Rain,Snow,Ice Pellets                     12/21/2012 5:00     1.3
+Snow                                       4/27/2012 9:00     3.7
+Snow Pellets                             11/24/2012 15:00     0.7
+Snow Showers                               3/4/2012 21:00     2.9
+Snow Showers,Fog                         12/29/2012 13:00   -10.0
+Snow,Blowing Snow                          2/25/2012 9:00    -1.4
+Snow,Fog                                  3/14/2012 19:00     1.1
+Snow,Haze                                  2/1/2012 21:00    -3.6
+Snow,Ice Pellets                            3/3/2012 4:00     0.8
+Thunderstorms                              7/4/2012 16:00    26.7
+Thunderstorms,Heavy Rain Showers           5/29/2012 6:00    10.9
+Thunderstorms,Moderate Rain Showers,Fog    7/17/2012 6:00    19.6
+Thunderstorms,Rain                        7/23/2012 18:00    21.3
+Thunderstorms,Rain Showers                  9/8/2012 4:00    25.5
+Thunderstorms,Rain Showers,Fog            7/31/2012 20:00    22.9
+Thunderstorms,Rain,Fog                     7/17/2012 5:00    20.6
+
+                                         Dew Point Temp\_C  Rel Hum\_\%  \textbackslash{}
+Weather
+Clear                                                20.4         99
+Cloudy                                               22.6         99
+Drizzle                                              17.7         96
+Drizzle,Fog                                          19.1        100
+Drizzle,Ice Pellets,Fog                              -0.7         92
+Drizzle,Snow                                          0.2         95
+Drizzle,Snow,Fog                                      0.6         98
+Fog                                                  19.6        100
+Freezing Drizzle                                     -3.3         93
+Freezing Drizzle,Fog                                 -2.3         94
+Freezing Drizzle,Haze                                -7.7         83
+Freezing Drizzle,Snow                                -4.6         94
+Freezing Fog                                         -0.3         99
+Freezing Rain                                        -1.7         92
+Freezing Rain,Fog                                    -0.9         93
+Freezing Rain,Haze                                   -7.4         83
+Freezing Rain,Ice Pellets,Fog                        -3.7         92
+Freezing Rain,Snow Grains                            -7.3         84
+Haze                                                 11.1         86
+Mainly Clear                                         21.2         99
+Moderate Rain,Fog                                     0.8         94
+Moderate Snow                                        -6.7         93
+Moderate Snow,Blowing Snow                           -6.4         93
+Mostly Cloudy                                        24.4        100
+Rain                                                 20.4         99
+Rain Showers                                         23.0         97
+Rain Showers,Fog                                     12.1         96
+Rain Showers,Snow Showers                            -1.2         78
+Rain,Fog                                             19.5        100
+Rain,Haze                                             2.9         86
+Rain,Ice Pellets                                     -0.6         92
+Rain,Snow                                             0.5         94
+Rain,Snow Grains                                     -2.1         75
+Rain,Snow,Fog                                         0.3         96
+Rain,Snow,Ice Pellets                                 0.1         94
+Snow                                                  0.3         96
+Snow Pellets                                         -6.4         59
+Snow Showers                                         -0.7         94
+Snow Showers,Fog                                    -11.1         92
+Snow,Blowing Snow                                    -2.9         91
+Snow,Fog                                              0.8         99
+Snow,Haze                                            -6.4         81
+Snow,Ice Pellets                                     -1.7         92
+Thunderstorms                                        20.1         87
+Thunderstorms,Heavy Rain Showers                      9.0         88
+Thunderstorms,Moderate Rain Showers,Fog              18.5         93
+Thunderstorms,Rain                                   19.1         93
+Thunderstorms,Rain Showers                           23.1         98
+Thunderstorms,Rain Showers,Fog                       21.3         91
+Thunderstorms,Rain,Fog                               18.6         88
+
+                                         Wind Speed\_km/h  Visibility\_km  \textbackslash{}
+Weather
+Clear                                                 33           48.3
+Cloudy                                                54           48.3
+Drizzle                                               30           25.0
+Drizzle,Fog                                           28            9.7
+Drizzle,Ice Pellets,Fog                               20            4.0
+Drizzle,Snow                                          19           11.3
+Drizzle,Snow,Fog                                      32            9.7
+Fog                                                   22            9.7
+Freezing Drizzle                                      26           12.9
+Freezing Drizzle,Fog                                  33            8.0
+Freezing Drizzle,Haze                                 11            4.0
+Freezing Drizzle,Snow                                 24           12.9
+Freezing Fog                                           9            0.8
+Freezing Rain                                         28           16.1
+Freezing Rain,Fog                                     26            9.7
+Freezing Rain,Haze                                     9            2.8
+Freezing Rain,Ice Pellets,Fog                         28            8.0
+Freezing Rain,Snow Grains                             32            4.8
+Haze                                                  17            9.7
+Mainly Clear                                          63           48.3
+Moderate Rain,Fog                                     17            6.4
+Moderate Snow                                         39            0.8
+Moderate Snow,Blowing Snow                            41            0.6
+Mostly Cloudy                                         83           48.3
+Rain                                                  52           48.3
+Rain Showers                                          41           48.3
+Rain Showers,Fog                                      13            6.4
+Rain Showers,Snow Showers                             28           24.1
+Rain,Fog                                              46            9.7
+Rain,Haze                                             17            9.7
+Rain,Ice Pellets                                      24            9.7
+Rain,Snow                                             52           25.0
+Rain,Snow Grains                                      26           25.0
+Rain,Snow,Fog                                          9            6.4
+Rain,Snow,Ice Pellets                                 28            6.4
+Snow                                                  57           25.0
+Snow Pellets                                          35            2.4
+Snow Showers                                          37           48.3
+Snow Showers,Fog                                      22            9.7
+Snow,Blowing Snow                                     48            9.7
+Snow,Fog                                              35            9.7
+Snow,Haze                                             15            6.4
+Snow,Ice Pellets                                      33           11.3
+Thunderstorms                                         15           25.0
+Thunderstorms,Heavy Rain Showers                       9            2.4
+Thunderstorms,Moderate Rain Showers,Fog               15            3.2
+Thunderstorms,Rain                                    30           24.1
+Thunderstorms,Rain Showers                            32           25.0
+Thunderstorms,Rain Showers,Fog                        35            9.7
+Thunderstorms,Rain,Fog                                19            4.8
+
+                                         Press\_kPa
+Weather
+Clear                                       103.63
+Cloudy                                      103.65
+Drizzle                                     101.56
+Drizzle,Fog                                 102.07
+Drizzle,Ice Pellets,Fog                     100.79
+Drizzle,Snow                                101.15
+Drizzle,Snow,Fog                            100.15
+Fog                                         103.04
+Freezing Drizzle                            101.02
+Freezing Drizzle,Fog                        101.27
+Freezing Drizzle,Haze                       100.36
+Freezing Drizzle,Snow                       101.18
+Freezing Fog                                102.85
+Freezing Rain                               101.00
+Freezing Rain,Fog                           101.01
+Freezing Rain,Haze                          100.41
+Freezing Rain,Ice Pellets,Fog               100.95
+Freezing Rain,Snow Grains                    98.56
+Haze                                        102.97
+Mainly Clear                                103.59
+Moderate Rain,Fog                            99.98
+Moderate Snow                               100.67
+Moderate Snow,Blowing Snow                  100.64
+Mostly Cloudy                               103.65
+Rain                                        102.26
+Rain Showers                                102.31
+Rain Showers,Fog                             99.83
+Rain Showers,Snow Showers                   101.11
+Rain,Fog                                    101.77
+Rain,Haze                                   100.61
+Rain,Ice Pellets                            100.12
+Rain,Snow                                   101.07
+Rain,Snow Grains                            100.60
+Rain,Snow,Fog                               100.73
+Rain,Snow,Ice Pellets                       100.47
+Snow                                        102.73
+Snow Pellets                                 99.70
+Snow Showers                                102.50
+Snow Showers,Fog                            102.52
+Snow,Blowing Snow                           100.62
+Snow,Fog                                    102.07
+Snow,Haze                                   100.99
+Snow,Ice Pellets                            100.96
+Thunderstorms                               100.62
+Thunderstorms,Heavy Rain Showers            100.26
+Thunderstorms,Moderate Rain Showers,Fog     100.01
+Thunderstorms,Rain                          100.83
+Thunderstorms,Rain Showers                  101.06
+Thunderstorms,Rain Showers,Fog              100.64
+Thunderstorms,Rain,Fog                      100.08
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{65}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} show all the records where the weather is fog}
+\PY{n}{data}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{65}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+0  1/1/2012 0:00    -1.8              -3.9         86                4
+1  1/1/2012 1:00    -1.8              -3.7         87                4
+
+   Visibility\_km  Press\_kPa Weather
+0            8.0     101.24     Fog
+1            8.0     101.24     Fog
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{71}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{n}{data}\PY{o}{.}\PY{n}{Weather} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Fog}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{c+c1}{\PYZsh{}answer}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{71}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+             Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+0        1/1/2012 0:00    -1.8              -3.9         86                4
+1        1/1/2012 1:00    -1.8              -3.7         87                4
+4        1/1/2012 4:00    -1.5              -3.3         88                7
+5        1/1/2012 5:00    -1.4              -3.3         87                9
+6        1/1/2012 6:00    -1.5              -3.1         89                7
+{\ldots}                {\ldots}     {\ldots}               {\ldots}        {\ldots}              {\ldots}
+8716   12/29/2012 4:00   -16.0             -17.2         90                6
+8717   12/29/2012 5:00   -14.8             -15.9         91                4
+8718   12/29/2012 6:00   -13.8             -15.3         88                4
+8719   12/29/2012 7:00   -14.8             -16.4         88                7
+8722  12/29/2012 10:00   -12.0             -13.3         90                7
+
+      Visibility\_km  Press\_kPa Weather
+0               8.0     101.24     Fog
+1               8.0     101.24     Fog
+4               4.8     101.23     Fog
+5               6.4     101.27     Fog
+6               6.4     101.29     Fog
+{\ldots}             {\ldots}        {\ldots}     {\ldots}
+8716            9.7     101.25     Fog
+8717            6.4     101.25     Fog
+8718            9.7     101.25     Fog
+8719            8.0     101.22     Fog
+8722            6.4     101.15     Fog
+
+[150 rows x 8 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{72}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} find all the intances where weather is clear or the visibilty is above 40}
+\PY{n}{data}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{72}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+0  1/1/2012 0:00    -1.8              -3.9         86                4
+1  1/1/2012 1:00    -1.8              -3.7         87                4
+2  1/1/2012 2:00    -1.8              -3.4         89                7
+3  1/1/2012 3:00    -1.5              -3.2         88                6
+4  1/1/2012 4:00    -1.5              -3.3         88                7
+
+   Visibility\_km  Press\_kPa               Weather
+0            8.0     101.24                   Fog
+1            8.0     101.24                   Fog
+2            4.0     101.26  Freezing Drizzle,Fog
+3            4.0     101.27  Freezing Drizzle,Fog
+4            4.8     101.23                   Fog
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{80}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{n}{data}\PY{o}{.}\PY{n}{Weather} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Clear}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{80}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+             Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+67      1/3/2012 19:00   -16.9             -24.8         50               24
+114     1/5/2012 18:00    -7.1             -14.4         56               11
+115     1/5/2012 19:00    -9.2             -15.4         61                7
+116     1/5/2012 20:00    -9.8             -15.7         62                9
+117     1/5/2012 21:00    -9.0             -14.8         63               13
+{\ldots}                {\ldots}     {\ldots}               {\ldots}        {\ldots}              {\ldots}
+8646   12/26/2012 6:00   -13.4             -14.8         89                4
+8698  12/28/2012 10:00    -6.1              -8.6         82               19
+8713   12/29/2012 1:00   -11.9             -13.6         87               11
+8714   12/29/2012 2:00   -11.8             -13.1         90               13
+8756  12/30/2012 20:00   -13.8             -16.5         80               24
+
+      Visibility\_km  Press\_kPa Weather
+67             25.0     101.74   Clear
+114            25.0     100.71   Clear
+115            25.0     100.80   Clear
+116            25.0     100.83   Clear
+117            25.0     100.83   Clear
+{\ldots}             {\ldots}        {\ldots}     {\ldots}
+8646           25.0     102.47   Clear
+8698           24.1     101.27   Clear
+8713           25.0     101.31   Clear
+8714           25.0     101.33   Clear
+8756           25.0     101.52   Clear
+
+[1326 rows x 8 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{81}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Visibility\PYZus{}km}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{l+m+mi}{40}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{81}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+             Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+106     1/5/2012 10:00    -6.0             -10.0         73               17
+107     1/5/2012 11:00    -5.6             -10.2         70               22
+108     1/5/2012 12:00    -4.7              -9.6         69               20
+109     1/5/2012 13:00    -4.4              -9.7         66               26
+110     1/5/2012 14:00    -5.1             -10.7         65               22
+{\ldots}                {\ldots}     {\ldots}               {\ldots}        {\ldots}              {\ldots}
+8748  12/30/2012 12:00   -12.2             -15.7         75               26
+8749  12/30/2012 13:00   -12.4             -16.2         73               37
+8750  12/30/2012 14:00   -11.8             -16.1         70               37
+8751  12/30/2012 15:00   -11.3             -15.6         70               32
+8752  12/30/2012 16:00   -11.4             -15.5         72               26
+
+      Visibility\_km  Press\_kPa        Weather
+106            48.3     100.45   Mainly Clear
+107            48.3     100.41   Mainly Clear
+108            48.3     100.38   Mainly Clear
+109            48.3     100.40   Mainly Clear
+110            48.3     100.46   Mainly Clear
+{\ldots}             {\ldots}        {\ldots}            {\ldots}
+8748           48.3     100.91  Mostly Cloudy
+8749           48.3     100.92  Mostly Cloudy
+8750           48.3     100.96   Mainly Clear
+8751           48.3     101.05   Mainly Clear
+8752           48.3     101.15   Mainly Clear
+
+[2014 rows x 8 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{88}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{Weather} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Clear}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} \PY{o}{|} \PY{p}{(}\PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Visibility\PYZus{}km}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{l+m+mi}{40}\PY{p}{)}\PY{p}{]}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{l+m+mi}{50}\PY{p}{)} \PY{c+c1}{\PYZsh{}answer}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{88}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+           Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+67    1/3/2012 19:00   -16.9             -24.8         50               24
+106   1/5/2012 10:00    -6.0             -10.0         73               17
+107   1/5/2012 11:00    -5.6             -10.2         70               22
+108   1/5/2012 12:00    -4.7              -9.6         69               20
+109   1/5/2012 13:00    -4.4              -9.7         66               26
+110   1/5/2012 14:00    -5.1             -10.7         65               22
+111   1/5/2012 15:00    -4.3             -12.0         55               26
+114   1/5/2012 18:00    -7.1             -14.4         56               11
+115   1/5/2012 19:00    -9.2             -15.4         61                7
+116   1/5/2012 20:00    -9.8             -15.7         62                9
+117   1/5/2012 21:00    -9.0             -14.8         63               13
+183   1/8/2012 15:00    -6.6             -12.9         61               20
+241   1/11/2012 1:00   -10.7             -17.8         56               17
+242   1/11/2012 2:00   -12.0             -18.9         56               19
+243   1/11/2012 3:00   -12.7             -19.4         57               19
+244   1/11/2012 4:00   -13.4             -20.1         57               17
+324  1/14/2012 12:00   -17.5             -23.8         58               20
+325  1/14/2012 13:00   -17.1             -24.1         55               17
+326  1/14/2012 14:00   -16.7             -23.4         56               17
+327  1/14/2012 15:00   -16.7             -23.4         56               22
+344   1/15/2012 8:00   -23.3             -28.5         62                7
+345   1/15/2012 9:00   -22.2             -27.8         60                9
+346  1/15/2012 10:00   -20.6             -26.8         58                9
+347  1/15/2012 11:00   -19.3             -26.1         55                9
+348  1/15/2012 12:00   -18.0             -25.5         52               13
+349  1/15/2012 13:00   -16.8             -24.2         53               20
+350  1/15/2012 14:00   -16.0             -23.4         53               26
+351  1/15/2012 15:00   -15.4             -22.8         53               24
+352  1/15/2012 16:00   -15.1             -22.8         52               24
+353  1/15/2012 17:00   -16.2             -23.2         55               15
+354  1/15/2012 18:00   -16.3             -22.9         57               17
+355  1/15/2012 19:00   -16.3             -22.7         58               20
+356  1/15/2012 20:00   -16.7             -22.4         61               17
+357  1/15/2012 21:00   -16.9             -22.2         63               15
+358  1/15/2012 22:00   -16.9             -21.7         66               17
+359  1/15/2012 23:00   -16.9             -21.4         68               15
+360   1/16/2012 0:00   -17.1             -21.9         66               15
+361   1/16/2012 1:00   -17.8             -22.7         65                6
+362   1/16/2012 2:00   -18.5             -23.0         68                6
+363   1/16/2012 3:00   -19.2             -23.8         67                6
+364   1/16/2012 4:00   -18.7             -23.5         66                0
+365   1/16/2012 5:00   -19.1             -23.3         69                0
+366   1/16/2012 6:00   -18.7             -23.2         68                0
+367   1/16/2012 7:00   -17.9             -21.5         73                4
+368   1/16/2012 8:00   -17.9             -22.6         67                9
+369   1/16/2012 9:00   -14.4             -20.7         59               22
+370  1/16/2012 10:00   -13.6             -18.7         65               19
+371  1/16/2012 11:00   -12.7             -17.7         66               20
+372  1/16/2012 12:00   -10.7             -16.9         60               19
+373  1/16/2012 13:00   -10.1             -16.1         61               13
+
+     Visibility\_km  Press\_kPa        Weather
+67            25.0     101.74          Clear
+106           48.3     100.45   Mainly Clear
+107           48.3     100.41   Mainly Clear
+108           48.3     100.38   Mainly Clear
+109           48.3     100.40   Mainly Clear
+110           48.3     100.46   Mainly Clear
+111           48.3     100.52   Mainly Clear
+114           25.0     100.71          Clear
+115           25.0     100.80          Clear
+116           25.0     100.83          Clear
+117           25.0     100.83          Clear
+183           48.3     102.04  Mostly Cloudy
+241           25.0     101.49          Clear
+242           25.0     101.57          Clear
+243           25.0     101.64          Clear
+244           25.0     101.66          Clear
+324           48.3     101.16  Mostly Cloudy
+325           48.3     101.18   Mainly Clear
+326           48.3     101.20  Mostly Cloudy
+327           48.3     101.24  Mostly Cloudy
+344           24.1     102.45          Clear
+345           48.3     102.57   Mainly Clear
+346           48.3     102.66   Mainly Clear
+347           48.3     102.68   Mainly Clear
+348           48.3     102.67   Mainly Clear
+349           48.3     102.65   Mainly Clear
+350           48.3     102.66   Mainly Clear
+351           48.3     102.71          Clear
+352           48.3     102.79          Clear
+353           25.0     102.85          Clear
+354           25.0     102.89          Clear
+355           25.0     102.94          Clear
+356           25.0     102.98          Clear
+357           25.0     103.02          Clear
+358           25.0     103.07          Clear
+359           25.0     103.09          Clear
+360           25.0     103.09          Clear
+361           25.0     103.05          Clear
+362           25.0     103.08          Clear
+363           25.0     103.07          Clear
+364           25.0     103.05          Clear
+365           25.0     103.02          Clear
+366           25.0     103.01          Clear
+367           48.3     102.96   Mainly Clear
+368           48.3     102.90  Mostly Cloudy
+369           48.3     102.75         Cloudy
+370           48.3     102.62  Mostly Cloudy
+371           48.3     102.44  Mostly Cloudy
+372           48.3     102.17  Mostly Cloudy
+373           48.3     101.92         Cloudy
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{89}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} find all the cases where \PYZhy{}\PYZhy{} weather is clear and relative humidity is greater 50 or visibility is above 40}
+\PY{n}{data}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{89}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+0  1/1/2012 0:00    -1.8              -3.9         86                4
+1  1/1/2012 1:00    -1.8              -3.7         87                4
+2  1/1/2012 2:00    -1.8              -3.4         89                7
+3  1/1/2012 3:00    -1.5              -3.2         88                6
+4  1/1/2012 4:00    -1.5              -3.3         88                7
+
+   Visibility\_km  Press\_kPa               Weather
+0            8.0     101.24                   Fog
+1            8.0     101.24                   Fog
+2            4.0     101.26  Freezing Drizzle,Fog
+3            4.0     101.27  Freezing Drizzle,Fog
+4            4.8     101.23                   Fog
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{91}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{n}{data}\PY{o}{.}\PY{n}{Weather} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Clear}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{91}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+             Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+67      1/3/2012 19:00   -16.9             -24.8         50               24
+114     1/5/2012 18:00    -7.1             -14.4         56               11
+115     1/5/2012 19:00    -9.2             -15.4         61                7
+116     1/5/2012 20:00    -9.8             -15.7         62                9
+117     1/5/2012 21:00    -9.0             -14.8         63               13
+{\ldots}                {\ldots}     {\ldots}               {\ldots}        {\ldots}              {\ldots}
+8646   12/26/2012 6:00   -13.4             -14.8         89                4
+8698  12/28/2012 10:00    -6.1              -8.6         82               19
+8713   12/29/2012 1:00   -11.9             -13.6         87               11
+8714   12/29/2012 2:00   -11.8             -13.1         90               13
+8756  12/30/2012 20:00   -13.8             -16.5         80               24
+
+      Visibility\_km  Press\_kPa Weather
+67             25.0     101.74   Clear
+114            25.0     100.71   Clear
+115            25.0     100.80   Clear
+116            25.0     100.83   Clear
+117            25.0     100.83   Clear
+{\ldots}             {\ldots}        {\ldots}     {\ldots}
+8646           25.0     102.47   Clear
+8698           24.1     101.27   Clear
+8713           25.0     101.31   Clear
+8714           25.0     101.33   Clear
+8756           25.0     101.52   Clear
+
+[1326 rows x 8 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{92}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Rel Hum\PYZus{}}\PY{l+s+s1}{\PYZpc{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{l+m+mi}{50}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{92}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+             Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+0        1/1/2012 0:00    -1.8              -3.9         86                4
+1        1/1/2012 1:00    -1.8              -3.7         87                4
+2        1/1/2012 2:00    -1.8              -3.4         89                7
+3        1/1/2012 3:00    -1.5              -3.2         88                6
+4        1/1/2012 4:00    -1.5              -3.3         88                7
+{\ldots}                {\ldots}     {\ldots}               {\ldots}        {\ldots}              {\ldots}
+8779  12/31/2012 19:00     0.1              -2.7         81               30
+8780  12/31/2012 20:00     0.2              -2.4         83               24
+8781  12/31/2012 21:00    -0.5              -1.5         93               28
+8782  12/31/2012 22:00    -0.2              -1.8         89               28
+8783  12/31/2012 23:00     0.0              -2.1         86               30
+
+      Visibility\_km  Press\_kPa               Weather
+0               8.0     101.24                   Fog
+1               8.0     101.24                   Fog
+2               4.0     101.26  Freezing Drizzle,Fog
+3               4.0     101.27  Freezing Drizzle,Fog
+4               4.8     101.23                   Fog
+{\ldots}             {\ldots}        {\ldots}                   {\ldots}
+8779            9.7     100.13                  Snow
+8780            9.7     100.03                  Snow
+8781            4.8      99.95                  Snow
+8782            9.7      99.91                  Snow
+8783           11.3      99.89                  Snow
+
+[7297 rows x 8 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{93}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{Weather} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Clear}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} \PY{o}{\PYZam{}} \PY{p}{(}\PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Rel Hum\PYZus{}}\PY{l+s+s1}{\PYZpc{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{l+m+mi}{50}\PY{p}{)}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{93}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+             Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+114     1/5/2012 18:00    -7.1             -14.4         56               11
+115     1/5/2012 19:00    -9.2             -15.4         61                7
+116     1/5/2012 20:00    -9.8             -15.7         62                9
+117     1/5/2012 21:00    -9.0             -14.8         63               13
+241     1/11/2012 1:00   -10.7             -17.8         56               17
+{\ldots}                {\ldots}     {\ldots}               {\ldots}        {\ldots}              {\ldots}
+8646   12/26/2012 6:00   -13.4             -14.8         89                4
+8698  12/28/2012 10:00    -6.1              -8.6         82               19
+8713   12/29/2012 1:00   -11.9             -13.6         87               11
+8714   12/29/2012 2:00   -11.8             -13.1         90               13
+8756  12/30/2012 20:00   -13.8             -16.5         80               24
+
+      Visibility\_km  Press\_kPa Weather
+114            25.0     100.71   Clear
+115            25.0     100.80   Clear
+116            25.0     100.83   Clear
+117            25.0     100.83   Clear
+241            25.0     101.49   Clear
+{\ldots}             {\ldots}        {\ldots}     {\ldots}
+8646           25.0     102.47   Clear
+8698           24.1     101.27   Clear
+8713           25.0     101.31   Clear
+8714           25.0     101.33   Clear
+8756           25.0     101.52   Clear
+
+[1070 rows x 8 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{94}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Visibility\PYZus{}km}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{l+m+mi}{40}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{94}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+             Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+106     1/5/2012 10:00    -6.0             -10.0         73               17
+107     1/5/2012 11:00    -5.6             -10.2         70               22
+108     1/5/2012 12:00    -4.7              -9.6         69               20
+109     1/5/2012 13:00    -4.4              -9.7         66               26
+110     1/5/2012 14:00    -5.1             -10.7         65               22
+{\ldots}                {\ldots}     {\ldots}               {\ldots}        {\ldots}              {\ldots}
+8748  12/30/2012 12:00   -12.2             -15.7         75               26
+8749  12/30/2012 13:00   -12.4             -16.2         73               37
+8750  12/30/2012 14:00   -11.8             -16.1         70               37
+8751  12/30/2012 15:00   -11.3             -15.6         70               32
+8752  12/30/2012 16:00   -11.4             -15.5         72               26
+
+      Visibility\_km  Press\_kPa        Weather
+106            48.3     100.45   Mainly Clear
+107            48.3     100.41   Mainly Clear
+108            48.3     100.38   Mainly Clear
+109            48.3     100.40   Mainly Clear
+110            48.3     100.46   Mainly Clear
+{\ldots}             {\ldots}        {\ldots}            {\ldots}
+8748           48.3     100.91  Mostly Cloudy
+8749           48.3     100.92  Mostly Cloudy
+8750           48.3     100.96   Mainly Clear
+8751           48.3     101.05   Mainly Clear
+8752           48.3     101.15   Mainly Clear
+
+[2014 rows x 8 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{96}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{data}\PY{p}{[}\PY{p}{(}\PY{n}{data}\PY{o}{.}\PY{n}{Weather} \PY{o}{==} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Clear}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} \PY{o}{\PYZam{}} \PY{p}{(}\PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Rel Hum\PYZus{}}\PY{l+s+s1}{\PYZpc{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{l+m+mi}{50}\PY{p}{)} \PY{o}{|} \PY{p}{(}\PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Visibility\PYZus{}km}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{l+m+mi}{40}\PY{p}{)}\PY{p}{]}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{l+m+mi}{50}\PY{p}{)} \PY{c+c1}{\PYZsh{}answer}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{96}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+           Date/Time  Temp\_C  Dew Point Temp\_C  Rel Hum\_\%  Wind Speed\_km/h  \textbackslash{}
+106   1/5/2012 10:00    -6.0             -10.0         73               17
+107   1/5/2012 11:00    -5.6             -10.2         70               22
+108   1/5/2012 12:00    -4.7              -9.6         69               20
+109   1/5/2012 13:00    -4.4              -9.7         66               26
+110   1/5/2012 14:00    -5.1             -10.7         65               22
+111   1/5/2012 15:00    -4.3             -12.0         55               26
+114   1/5/2012 18:00    -7.1             -14.4         56               11
+115   1/5/2012 19:00    -9.2             -15.4         61                7
+116   1/5/2012 20:00    -9.8             -15.7         62                9
+117   1/5/2012 21:00    -9.0             -14.8         63               13
+183   1/8/2012 15:00    -6.6             -12.9         61               20
+241   1/11/2012 1:00   -10.7             -17.8         56               17
+242   1/11/2012 2:00   -12.0             -18.9         56               19
+243   1/11/2012 3:00   -12.7             -19.4         57               19
+244   1/11/2012 4:00   -13.4             -20.1         57               17
+324  1/14/2012 12:00   -17.5             -23.8         58               20
+325  1/14/2012 13:00   -17.1             -24.1         55               17
+326  1/14/2012 14:00   -16.7             -23.4         56               17
+327  1/14/2012 15:00   -16.7             -23.4         56               22
+344   1/15/2012 8:00   -23.3             -28.5         62                7
+345   1/15/2012 9:00   -22.2             -27.8         60                9
+346  1/15/2012 10:00   -20.6             -26.8         58                9
+347  1/15/2012 11:00   -19.3             -26.1         55                9
+348  1/15/2012 12:00   -18.0             -25.5         52               13
+349  1/15/2012 13:00   -16.8             -24.2         53               20
+350  1/15/2012 14:00   -16.0             -23.4         53               26
+351  1/15/2012 15:00   -15.4             -22.8         53               24
+352  1/15/2012 16:00   -15.1             -22.8         52               24
+353  1/15/2012 17:00   -16.2             -23.2         55               15
+354  1/15/2012 18:00   -16.3             -22.9         57               17
+355  1/15/2012 19:00   -16.3             -22.7         58               20
+356  1/15/2012 20:00   -16.7             -22.4         61               17
+357  1/15/2012 21:00   -16.9             -22.2         63               15
+358  1/15/2012 22:00   -16.9             -21.7         66               17
+359  1/15/2012 23:00   -16.9             -21.4         68               15
+360   1/16/2012 0:00   -17.1             -21.9         66               15
+361   1/16/2012 1:00   -17.8             -22.7         65                6
+362   1/16/2012 2:00   -18.5             -23.0         68                6
+363   1/16/2012 3:00   -19.2             -23.8         67                6
+364   1/16/2012 4:00   -18.7             -23.5         66                0
+365   1/16/2012 5:00   -19.1             -23.3         69                0
+366   1/16/2012 6:00   -18.7             -23.2         68                0
+367   1/16/2012 7:00   -17.9             -21.5         73                4
+368   1/16/2012 8:00   -17.9             -22.6         67                9
+369   1/16/2012 9:00   -14.4             -20.7         59               22
+370  1/16/2012 10:00   -13.6             -18.7         65               19
+371  1/16/2012 11:00   -12.7             -17.7         66               20
+372  1/16/2012 12:00   -10.7             -16.9         60               19
+373  1/16/2012 13:00   -10.1             -16.1         61               13
+374  1/16/2012 14:00    -9.0             -13.8         68               13
+
+     Visibility\_km  Press\_kPa        Weather
+106           48.3     100.45   Mainly Clear
+107           48.3     100.41   Mainly Clear
+108           48.3     100.38   Mainly Clear
+109           48.3     100.40   Mainly Clear
+110           48.3     100.46   Mainly Clear
+111           48.3     100.52   Mainly Clear
+114           25.0     100.71          Clear
+115           25.0     100.80          Clear
+116           25.0     100.83          Clear
+117           25.0     100.83          Clear
+183           48.3     102.04  Mostly Cloudy
+241           25.0     101.49          Clear
+242           25.0     101.57          Clear
+243           25.0     101.64          Clear
+244           25.0     101.66          Clear
+324           48.3     101.16  Mostly Cloudy
+325           48.3     101.18   Mainly Clear
+326           48.3     101.20  Mostly Cloudy
+327           48.3     101.24  Mostly Cloudy
+344           24.1     102.45          Clear
+345           48.3     102.57   Mainly Clear
+346           48.3     102.66   Mainly Clear
+347           48.3     102.68   Mainly Clear
+348           48.3     102.67   Mainly Clear
+349           48.3     102.65   Mainly Clear
+350           48.3     102.66   Mainly Clear
+351           48.3     102.71          Clear
+352           48.3     102.79          Clear
+353           25.0     102.85          Clear
+354           25.0     102.89          Clear
+355           25.0     102.94          Clear
+356           25.0     102.98          Clear
+357           25.0     103.02          Clear
+358           25.0     103.07          Clear
+359           25.0     103.09          Clear
+360           25.0     103.09          Clear
+361           25.0     103.05          Clear
+362           25.0     103.08          Clear
+363           25.0     103.07          Clear
+364           25.0     103.05          Clear
+365           25.0     103.02          Clear
+366           25.0     103.01          Clear
+367           48.3     102.96   Mainly Clear
+368           48.3     102.90  Mostly Cloudy
+369           48.3     102.75         Cloudy
+370           48.3     102.62  Mostly Cloudy
+371           48.3     102.44  Mostly Cloudy
+372           48.3     102.17  Mostly Cloudy
+373           48.3     101.92         Cloudy
+374           48.3     101.71  Mostly Cloudy
+\end{Verbatim}
+\end{tcolorbox}
+        
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
